@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white; 
+            text-align: center;
+            padding: 50px;
+            position: relative; 
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #form-container {
+            margin-top: 20px;
+        }
+
+        #hidden-key:hover {
+            cursor: pointer;
+        }
+
+        .corner-img {
+            position: absolute;
+            width: 240px; 
+            height: auto;
+        }
+
+        #top-left {
+            top: 10px;
+            left: 10px;
+        }
+
+        #top-right {
+            top: 10px;
+            right: 10px;
+        }
+
+        #bottom-left {
+            bottom: 10px;
+            left: 10px;
+        }
+
+        #bottom-right {
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to my CTF Challenge!</h1>
+    <p>Your task is to uncover the hidden message. Good Luck!<br>If you are struggling to find where to start, just click the HINT button!</p>
+
+    <div class="hidden" id="hidden-content">
+        <p><a href="Maybe.html">Whatsthis?</a></p>
+    </div>
+
+    <img src="Hidden.png" width="70%" height="auto" usemap="#hiddenMap">
+    <map name="hiddenMap">
+        <area shape="rect" coords="281,322,419,482" href="Path.txt" alt="Secret">
+    </map>
+
+    <img src="Key1.png" class="corner-img" id="top-left">
+    <img src="Key2.png" class="corner-img" id="top-right">
+    <img src="Key3.png" class="corner-img" id="bottom-left">
+    <img src="House.png" class="corner-img" id="bottom-right">
+
+    <div id="form-container">
+        <h3>Submit Your Answer:</h3>
+        <input type="text" id="user-answer" placeholder="Enter the message here!">
+        <button class="button" onclick="checkAnswer()">Submit</button>
+        <button class="button" onclick="showHint()">HINT</button>  
+        <p id="feedback"></p>
+        <p id="hint" style="display: none; color: yellow; font-style: italic;"></p>
+    </div>
+
+    <script>
+        function xorEncryptDecrypt(input, key) {
+            let result = "";
+            for (let i = 0; i < input.length; i++) {
+                result += String.fromCharCode(input.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return btoa(result);
+        }
+
+        function checkAnswer() {
+            var userInput = document.getElementById('user-answer').value.trim();
+            var feedback = document.getElementById('feedback');
+
+            var encodedAnswer = "LxY8CEMwChsmRTsCFj5FIR0KGWtIWSYQPQJDMBcbJQ=="; 
+            var key = "mySecretKey";
+            var correctAnswer = atob(encodedAnswer).split('').map((char, i) => String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join('');
+
+            if (userInput === correctAnswer) {
+                feedback.textContent = "Correct! Congratulations!";
+                feedback.style.color = "green";
+            } else {
+                feedback.textContent = "Incorrect, try again!";
+                feedback.style.color = "red";
+            }
+        }
+
+        function showHint() {
+            var hint = document.getElementById("hint");
+            hint.textContent = "The answer you seek requires the key; UNLOCK it!";
+            hint.style.display = "block";
+        }
+    </script>
+</body>
+</html>
