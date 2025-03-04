@@ -68,11 +68,17 @@
     <p>Your task is to uncover the hidden message. Good Luck!<br>If you are struggling to find where to start, just click the HINT button!</p>
 
     <div class="hidden" id="hidden-content">
-        <p><a href="#" onclick="openMaybe()">Whatsthis?</a></p>
+        <p><a href="#" onclick="redirectToMaybe()">Whatsthis?</a></p>
 
 <script>
-    function openMaybe() {
-        window.open("https://raw.githubusercontent.com/S3cretCode/Project/main/Maybe.html", "_blank");
+    function redirectToMaybe() {
+        fetch("https://raw.githubusercontent.com/S3cretCode/Project/main/Maybe.html")
+            .then(response => response.text())
+            .then(html => {
+                let newWindow = window.open();
+                newWindow.document.write(html);
+                newWindow.document.close();
+            });
     }
 </script>
     </div>
