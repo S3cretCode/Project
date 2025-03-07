@@ -78,23 +78,6 @@
     <a id="IMPORTANTlink" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="position: absolute; left: -9999px;">Nothing to see here</a>
 
     <script>
-        // Disable right-click context menu
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-
-        // Disable F12 and Ctrl+Shift+I for developer tools
-        document.addEventListener('keydown', function(e) {
-            if (e.keyCode === 123 || (e.ctrlKey && (e.keyCode === 73 || e.keyCode === 74))) {
-                e.preventDefault();
-            }
-        });
-
-        // Obfuscated XOR Encryption function
-        var _0xabc123 = function() {
-            return "LxY8CEMwChsmRTsCFj5FIR0KGWtIWSYQPQJDMBcbJQ==";
-        };
-
         function xorEncryptDecrypt(input, key) {
             let result = "";
             for (let i = 0; i < input.length; i++) {
@@ -107,28 +90,17 @@
             var userInput = document.getElementById('user-answer').value.trim();
             var feedback = document.getElementById('feedback');
 
-            // Send answer to the server for validation
-            fetch('/validate-answer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ answer: userInput })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.correct) {
-                    feedback.textContent = "Correct! Congratulations!";
-                    feedback.style.color = "green";
-                } else {
-                    feedback.textContent = "Incorrect, try again!";
-                    feedback.style.color = "red";
-                }
-            })
-            .catch(error => {
-                feedback.textContent = "Error validating answer.";
+            var encodedAnswer = "LxY8CEMwChsmRTsCFj5FIR0KGWtIWSYQPQJDMBcbJQ=="; 
+            var key = "mySecretKey";
+            var correctAnswer = atob(encodedAnswer).split('').map((char, i) => String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join('');
+
+            if (userInput === correctAnswer) {
+                feedback.textContent = "Correct! Congratulations!";
+                feedback.style.color = "green";
+            } else {
+                feedback.textContent = "Incorrect, try again!";
                 feedback.style.color = "red";
-            });
+            }
         }
 
         function showHint() {
@@ -137,10 +109,38 @@
             hint.style.display = "block";
         }
 
-        // Remove all console logs in production
-        if (typeof console._commandLineAPI === "undefined") {
-            console.log = function() {};
+        console.log("Decryption sequence initiated...");
+        console.log("Warning: Incorrect input detected.");
+        console.log("For debugging, visit: https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+
+        // Disable console.log, console.warn, and console.error to prevent easy debugging
+console.log = console.warn = console.error = function() {
+    document.body.innerHTML = "<h1>Console usage detected! Refresh to continue.</h1>";
+};
+
+// Prevent users from clearing the console
+const originalClear = console.clear;
+console.clear = function() {
+    console.log("Console clearing is disabled.");
+};
+
+// Detect console typing (self-executing function)
+(function() {
+    let devtoolsOpened = false;
+    
+    setInterval(function() {
+        let before = new Date().getTime();
+        debugger; // Forces a pause if DevTools is open
+        let after = new Date().getTime();
+        
+        if (after - before > 100) { // If debugger triggers, DevTools is open
+            if (!devtoolsOpened) {
+                console.log("Warning: Debugging detected!");
+                devtoolsOpened = true;
+            }
         }
+    }, 1000);
+})();
     </script>
 
     <!-- SYSTEM: Error retrieving flag. Check debug logs for details. -->
