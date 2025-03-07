@@ -86,22 +86,31 @@
             return btoa(result);
         }
 
-        function checkAnswer() {
-            var userInput = document.getElementById('user-answer').value.trim();
-            var feedback = document.getElementById('feedback');
+        async function hashMD5(input) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input);
+    const hashBuffer = await crypto.subtle.digest("MD5", data);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+}
 
-            var encodedAnswer = "LxY8CEMwChsmRTsCFj5FIR0KGWtIWSYQPQJDMBcbJQ=="; 
-            var key = "mySecretKey";
-            var correctAnswer = atob(encodedAnswer).split('').map((char, i) => String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join('');
+async function checkAnswer() {
+    var userInput = document.getElementById('user-answer').value.trim();
+    var feedback = document.getElementById('feedback');
 
-            if (userInput === correctAnswer) {
-                feedback.textContent = "Correct! Congratulations!";
-                feedback.style.color = "green";
-            } else {
-                feedback.textContent = "Incorrect, try again!";
-                feedback.style.color = "red";
-            }
-        }
+    var correctAnswerHash = "32b775a1bb9e994fa7f19d877fc89a71"; 
+
+    var userHash = await hashMD5(userInput);
+
+    if (userHash === correctAnswerHash) {
+        feedback.textContent = "Correct! Congratulations!";
+        feedback.style.color = "green";
+    } else {
+        feedback.textContent = "Incorrect, try again!";
+        feedback.style.color = "red";
+    }
+}
 
         function showHint() {
             var hint = document.getElementById("hint");
