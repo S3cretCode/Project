@@ -113,27 +113,24 @@
         console.log("Warning: Incorrect input detected.");
         console.log("For debugging, visit: https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
-        // Disable console.log, console.warn, and console.error to prevent easy debugging
 console.log = console.warn = console.error = function() {
     document.body.innerHTML = "<h1>Console usage detected! Refresh to continue.</h1>";
 };
 
-// Prevent users from clearing the console
 const originalClear = console.clear;
 console.clear = function() {
     console.log("Console clearing is disabled.");
 };
 
-// Detect console typing (self-executing function)
 (function() {
     let devtoolsOpened = false;
     
     setInterval(function() {
         let before = new Date().getTime();
-        debugger; // Forces a pause if DevTools is open
+        debugger;
         let after = new Date().getTime();
         
-        if (after - before > 100) { // If debugger triggers, DevTools is open
+        if (after - before > 100) { 
             if (!devtoolsOpened) {
                 console.log("Warning: Debugging detected!");
                 devtoolsOpened = true;
