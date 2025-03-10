@@ -8,10 +8,14 @@
         body {
             font-family: Arial, sans-serif;
             background-color: black;
-            color: white; 
+            color: white;
             text-align: center;
             padding: 50px;
-            position: relative; 
+            position: relative;
+        }
+
+        .hidden {
+            display: none;
         }
 
         .button {
@@ -24,9 +28,13 @@
             border-radius: 5px;
         }
 
+        #form-container {
+            margin-top: 20px;
+        }
+
         .corner-img {
             position: absolute;
-            width: 240px; 
+            width: 240px;
             height: auto;
         }
 
@@ -38,25 +46,25 @@
 </head>
 <body>
     <h1>Welcome to my CTF Challenge!</h1>
-    <p>Your task is to uncover the hidden message. Good Luck!</p>
+    <p>Your task is to uncover the hidden message. Good Luck!<br>If you are struggling to find where to start, just click the HINT button!</p>
 
     <p>Maybe this website will help? <a href="https://www.worldtimebuddy.com" target="_blank">Click Here</a></p>
     <p>Or perhaps this one? <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank">Encryption Info</a></p>
     <p>If you're really stuck, try <a href="https://www.lipsum.com/" target="_blank">this</a>.</p>
 
-    <div id="hidden-content" style="display: none;">
-        <p><a id="hidden-link"></a></p>
+    <div class="hidden" id="hidden-content">
+        <p><a id="hidden-link">Whatsthis?</a></p>
     </div>
 
-    <img id="hidden-image" width="70%" height="auto" usemap="#hiddenMap">
+    <img id="main-image" width="70%" height="auto" usemap="#hiddenMap">
     <map name="hiddenMap">
-        <area shape="rect" coords="281,322,419,482" id="secret-area" alt="Secret">
+        <area id="hidden-file" shape="rect" coords="281,322,419,482" alt="Secret">
     </map>
 
-    <img class="corner-img" id="top-left">
-    <img class="corner-img" id="top-right">
-    <img class="corner-img" id="bottom-left">
-    <img class="corner-img" id="bottom-right">
+    <img id="top-left" class="corner-img">
+    <img id="top-right" class="corner-img">
+    <img id="bottom-left" class="corner-img">
+    <img id="bottom-right" class="corner-img">
 
     <div id="form-container">
         <h3>Submit Your Answer:</h3>
@@ -70,34 +78,30 @@
     <a id="IMPORTANTlink" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="position: absolute; left: -9999px;">Nothing to see here</a>
 
     <script>
+        // Base64-encoded URLs (Users can't see them directly)
+        const files = {
+            mainImage: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9yZWZzL2hlYWRzL21haW4vSGlkZGVuLnBuZw==",
+            hiddenFile: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9yZWZzL2hlYWRzL21haW4vUGF0aC50eHQ=",
+            key1: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9yZWZzL2hlYWRzL21haW4vS2V5MS5wbmc=",
+            key2: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9yZWZzL2hlYWRzL21haW4vS2V5Mi5wbmc=",
+            key3: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9yZWZzL2hlYWRzL21haW4vS2V5My5wbmc=",
+            house: "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9yZWZzL2hlYWRzL21haW4vSG91c2UucG5n=",
+            hiddenPage: "aHR0cHM6Ly9TM2NyZXRDb2RlLmdpdGh1Yi5pby9Qcm9qZWN0L01heWJlLmh0bWw="
+        };
+
+        // Decode Base64 function
         function decodeBase64(encoded) {
             return atob(encoded);
         }
 
-        const filePaths = {
-            "hidden-link": "aHR0cHM6Ly9TM2NyZXRDb2RlLmdpdGh1Yi5pby9Qcm9qZWN0L01heWJlLmh0bWw=",
-            "hidden-image": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0hpZGRlbi5wbmc=",
-            "top-left": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0tleTEucG5n",
-            "top-right": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0tleTIucG5n",
-            "bottom-left": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0tleTMucG5n",
-            "bottom-right": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0hvdXNlLnBuZw==",
-            "secret-area": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL1BhdGgudHh0"
-        };
-
-        window.onload = function() {
-            for (const id in filePaths) {
-                let element = document.getElementById(id);
-                if (element) {
-                    let url = decodeBase64(filePaths[id]);
-                    if (id === "secret-area" || id === "hidden-link") {
-                        element.href = url;
-                        element.textContent = "Whatsthis?";
-                    } else {
-                        element.src = url;
-                    }
-                }
-            }
-        };
+        // Apply decoded URLs dynamically
+        document.getElementById('main-image').src = decodeBase64(files.mainImage);
+        document.getElementById('hidden-file').href = decodeBase64(files.hiddenFile);
+        document.getElementById('top-left').src = decodeBase64(files.key1);
+        document.getElementById('top-right').src = decodeBase64(files.key2);
+        document.getElementById('bottom-left').src = decodeBase64(files.key3);
+        document.getElementById('bottom-right').src = decodeBase64(files.house);
+        document.getElementById('hidden-link').href = decodeBase64(files.hiddenPage);
 
         async function hashMD5(input) {
             const encoder = new TextEncoder();
@@ -113,6 +117,7 @@
             var feedback = document.getElementById('feedback');
 
             var correctAnswerHash = "32b775a1bb9e994fa7f19d877fc89a71"; 
+
             var userHash = await hashMD5(userInput);
 
             if (userHash === correctAnswerHash) {
@@ -134,32 +139,14 @@
             document.body.innerHTML = "<h1>Console usage detected! Refresh to continue.</h1>";
         };
 
-        (function() {
-            setInterval(function() {
-                let before = new Date().getTime();
-                debugger;
-                let after = new Date().getTime();
-                
-                if (after - before > 100) { 
-                    console.log("Warning: Debugging detected!");
-                }
-            }, 1000);
-        })();
+        setInterval(() => {
+            let before = new Date().getTime();
+            debugger;
+            let after = new Date().getTime();
+            if (after - before > 100) {
+                console.log("Warning: Debugging detected!");
+            }
+        }, 1000);
     </script>
-
-    <!-- SYSTEM: Error retrieving flag. Check debug logs for details. -->
-    <!-- SYSTEM: Temporary password = "RickAstley42" -->
-    <!-- ALERT: Unauthorized access detected on Port 8080 -->
-
-    <p style="display: none;">
-        QXJlIHlvdSBzdXJlIHRoZXJlIGlzIG5vdGhpbmcgaGVyZSB0aGF0IHlvdSBzaG91bGQgYmUgbG9va2luZyBmb3I/IEtlZXAgc2VhcmNoaW5nLg==
-    </p>
-
-    <form style="display: none;" action="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-        <input type="text" name="username" placeholder="Enter username">
-        <input type="password" name="password" placeholder="Enter password">
-        <input type="submit" value="Submit">
-    </form>
-
 </body>
 </html>
