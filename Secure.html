@@ -14,10 +14,6 @@
             position: relative; 
         }
 
-        .hidden {
-            display: none;
-        }
-
         .button {
             padding: 10px 20px;
             font-size: 16px;
@@ -26,10 +22,6 @@
             color: white;
             border: none;
             border-radius: 5px;
-        }
-
-        #form-container {
-            margin-top: 20px;
         }
 
         .corner-img {
@@ -46,25 +38,25 @@
 </head>
 <body>
     <h1>Welcome to my CTF Challenge!</h1>
-    <p>Your task is to uncover the hidden message. Good Luck!<br>If you are struggling to find where to start, just click the HINT button!</p>
+    <p>Your task is to uncover the hidden message. Good Luck!</p>
 
     <p>Maybe this website will help? <a href="https://www.worldtimebuddy.com" target="_blank">Click Here</a></p>
     <p>Or perhaps this one? <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank">Encryption Info</a></p>
     <p>If you're really stuck, try <a href="https://www.lipsum.com/" target="_blank">this</a>.</p>
 
-    <div class="hidden" id="hidden-content">
-        <p><a href="#" id="secure-link">Whatsthis?</a></p>
+    <div id="hidden-content" style="display: none;">
+        <p><a id="hidden-link"></a></p>
     </div>
 
-    <img src="#" id="hidden-image" width="70%" height="auto" usemap="#hiddenMap">
+    <img id="hidden-image" width="70%" height="auto" usemap="#hiddenMap">
     <map name="hiddenMap">
-        <area shape="rect" coords="281,322,419,482" href="#" id="secret-area" alt="Secret">
+        <area shape="rect" coords="281,322,419,482" id="secret-area" alt="Secret">
     </map>
 
-    <img src="#" class="corner-img" id="top-left">
-    <img src="#" class="corner-img" id="top-right">
-    <img src="#" class="corner-img" id="bottom-left">
-    <img src="#" class="corner-img" id="bottom-right">
+    <img class="corner-img" id="top-left">
+    <img class="corner-img" id="top-right">
+    <img class="corner-img" id="bottom-left">
+    <img class="corner-img" id="bottom-right">
 
     <div id="form-container">
         <h3>Submit Your Answer:</h3>
@@ -75,13 +67,43 @@
         <p id="hint" style="display: none; color: yellow; font-style: italic;"></p>
     </div>
 
-    <a id="IMPORTANTlink" href="#" style="position: absolute; left: -9999px;">Nothing to see here</a>
+    <a id="IMPORTANTlink" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="position: absolute; left: -9999px;">Nothing to see here</a>
 
     <script>
-        async function hashSHA256(input) {
+        function decodeBase64(encoded) {
+            return atob(encoded);
+        }
+
+        // 🔒 Base64-encoded file paths (prevents easy URL modifications)
+        const filePaths = {
+            "hidden-link": "aHR0cHM6Ly9TM2NyZXRDb2RlLmdpdGh1Yi5pby9Qcm9qZWN0L01heWJlLmh0bWw=",
+            "hidden-image": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0hpZGRlbi5wbmc=",
+            "top-left": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0tleTEucG5n",
+            "top-right": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0tleTIucG5n",
+            "bottom-left": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0tleTMucG5n",
+            "bottom-right": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL0hvdXNlLnBuZw==",
+            "secret-area": "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1MzY3JldENvZGUvUHJvamVjdC9tYWluL1BhdGgudHh0"
+        };
+
+        window.onload = function() {
+            for (const id in filePaths) {
+                let element = document.getElementById(id);
+                if (element) {
+                    let url = decodeBase64(filePaths[id]);
+                    if (id === "secret-area" || id === "hidden-link") {
+                        element.href = url;
+                        element.textContent = "Whatsthis?";
+                    } else {
+                        element.src = url;
+                    }
+                }
+            }
+        };
+
+        async function hashMD5(input) {
             const encoder = new TextEncoder();
             const data = encoder.encode(input);
-            const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+            const hashBuffer = await crypto.subtle.digest("MD5", data);
             return Array.from(new Uint8Array(hashBuffer))
                 .map(byte => byte.toString(16).padStart(2, "0"))
                 .join("");
@@ -91,10 +113,8 @@
             var userInput = document.getElementById('user-answer').value.trim();
             var feedback = document.getElementById('feedback');
 
-            // Correct answer hash (SHA-256 for better security)
-            var correctAnswerHash = "ec65a0f9a1fbb8a8972b6a690d58a2e31e2f64209c5a09d68bf59a9cd56ff708"; 
-
-            var userHash = await hashSHA256(userInput);
+            var correctAnswerHash = "32b775a1bb9e994fa7f19d877fc89a71"; 
+            var userHash = await hashMD5(userInput);
 
             if (userHash === correctAnswerHash) {
                 feedback.textContent = "Correct! Congratulations!";
@@ -111,51 +131,36 @@
             hint.style.display = "block";
         }
 
-        // 🔒 Securely Load Hidden Elements
-        const fileURLs = {
-            "hidden-image": "https://secure-server.com/Hidden.png",
-            "top-left": "https://secure-server.com/Key1.png",
-            "top-right": "https://secure-server.com/Key2.png",
-            "bottom-left": "https://secure-server.com/Key3.png",
-            "bottom-right": "https://secure-server.com/House.png",
-            "secure-link": "https://secure-server.com/Maybe.html",
-            "secret-area": "https://secure-server.com/Path.txt"
-        };
-
-        for (const id in fileURLs) {
-            document.getElementById(id).setAttribute("href", fileURLs[id]);
-            document.getElementById(id).setAttribute("src", fileURLs[id]);
-        }
-
-        // 🚫 Prevent DevTools & Console Inspection
         console.log = console.warn = console.error = function() {
             document.body.innerHTML = "<h1>Console usage detected! Refresh to continue.</h1>";
         };
 
-        const originalClear = console.clear;
-        console.clear = function() {
-            console.log("Console clearing is disabled.");
-        };
-
         (function() {
-            let devtoolsOpened = false;
-            
             setInterval(function() {
                 let before = new Date().getTime();
                 debugger;
                 let after = new Date().getTime();
                 
                 if (after - before > 100) { 
-                    if (!devtoolsOpened) {
-                        console.log("Warning: Debugging detected!");
-                        devtoolsOpened = true;
-                    }
+                    console.log("Warning: Debugging detected!");
                 }
             }, 1000);
         })();
     </script>
 
     <!-- SYSTEM: Error retrieving flag. Check debug logs for details. -->
+    <!-- SYSTEM: Temporary password = "RickAstley42" -->
     <!-- ALERT: Unauthorized access detected on Port 8080 -->
+
+    <p style="display: none;">
+        QXJlIHlvdSBzdXJlIHRoZXJlIGlzIG5vdGhpbmcgaGVyZSB0aGF0IHlvdSBzaG91bGQgYmUgbG9va2luZyBmb3I/IEtlZXAgc2VhcmNoaW5nLg==
+    </p>
+
+    <form style="display: none;" action="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        <input type="text" name="username" placeholder="Enter username">
+        <input type="password" name="password" placeholder="Enter password">
+        <input type="submit" value="Submit">
+    </form>
+
 </body>
 </html>
