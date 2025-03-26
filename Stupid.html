@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTF Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white; 
+            text-align: center;
+            padding: 50px;
+            position: relative; 
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #form-container {
+            margin-top: 20px;
+        }
+
+        .corner-img {
+            position: absolute;
+            width: 240px; 
+            height: auto;
+        }
+
+        #top-left { top: 10px; left: 10px; }
+        #top-right { top: 10px; right: 10px; }
+        #bottom-left { bottom: 10px; left: 10px; }
+        #bottom-right { bottom: 10px; right: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Welcome to my CTF Challenge!</h1>
+    <p>Your task is to uncover the hidden message. Good Luck!<br>If you are struggling to find where to start, just click the HINT button!</p>
+
+    <p>Maybe this website will help? <a href="https://www.worldtimebuddy.com" target="_blank">Click Here</a></p>
+    <p>Or perhaps this one? <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard" target="_blank">Encryption Info</a></p>
+    <p>If you're really stuck, try <a href="https://www.lipsum.com/" target="_blank">this</a>.</p>
+
+    <div class="hidden" id="hidden-content">
+        <p><a href="https://S3cretCode.github.io/Project/Maybe.html">Whatsthis?</a></p>
+    </div>
+
+    <img src="https://raw.githubusercontent.com/S3cretCode/Project/refs/heads/main/Hidden.png" width="70%" height="auto" usemap="#hiddenMap">
+    <map name="hiddenMap">
+        <area shape="rect" coords="281,322,419,482" href="https://raw.githubusercontent.com/S3cretCode/Project/refs/heads/main/Path.txt" alt="Secret">
+    </map>
+
+    <img src="https://raw.githubusercontent.com/S3cretCode/Project/refs/heads/main/Key1.png" class="corner-img" id="top-left">
+    <img src="https://raw.githubusercontent.com/S3cretCode/Project/refs/heads/main/Key2.png" class="corner-img" id="top-right">
+    <img src="https://raw.githubusercontent.com/S3cretCode/Project/refs/heads/main/Key3.png" class="corner-img" id="bottom-left">
+    <img src="https://raw.githubusercontent.com/S3cretCode/Project/refs/heads/main/House.png" class="corner-img" id="bottom-right">
+
+    <div id="form-container">
+        <h3>Submit Your Answer:</h3>
+        <input type="text" id="user-answer" placeholder="Enter the message here!">
+        <button class="button" onclick="checkAnswer()">Submit</button>
+        <button class="button" onclick="showHint()">HINT</button>  
+        <p id="feedback"></p>
+        <p id="hint" style="display: none; color: yellow; font-style: italic;"></p>
+    </div>
+
+    <a id="link" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="position: absolute; left: -9999px;">Nothing to see here</a>
+
+    <script>
+        // MD5 Hashing Function
+        async function hashMD5(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('MD5', data);
+            return Array.from(new Uint8Array(hashBuffer))
+                .map(byte => byte.toString(16).padStart(2, "0"))
+                .join("");
+        }
+
+        // Check the answer
+        async function checkAnswer() {
+            const userInput = document.getElementById('user-answer').value.trim();
+            const feedback = document.getElementById('feedback');
+
+            const correctAnswer = "Boom Boom Boom Boom - King Bron";  // Your secret answer
+            const correctHash = await hashMD5(correctAnswer);          // MD5 hash of correct answer
+            const userHash = await hashMD5(userInput);                 // MD5 hash of user input
+
+            if (userHash === correctHash) {
+                feedback.textContent = "Correct! 🎉 Congratulations!";
+                feedback.style.color = "green";
+            } else {
+                feedback.textContent = "Incorrect, try again!";
+                feedback.style.color = "red";
+            }
+        }
+
+        // Display hint
+        function showHint() {
+            const hint = document.getElementById("hint");
+            hint.textContent = "The answer you seek requires the key; UNLOCK it!";
+            hint.style.display = "block";
+        }
+
+        // Disable console and dev tools except for inspect element
+        (function() {
+            const devtoolsCheck = setInterval(() => {
+                const start = performance.now();
+                debugger;
+                const end = performance.now();
+                
+                if (end - start > 100) {
+                    document.body.innerHTML = `<h1>DevTools usage detected! Please refresh and try again.</h1>`;
+                    clearInterval(devtoolsCheck);
+                }
+            }, 1000);
+
+            // Prevent right-click, disable context menu
+            window.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            // Disable shortcuts like F12, Ctrl+Shift+I, etc.
+            window.addEventListener("keydown", function(e) {
+                if ((e.ctrlKey && e.shiftKey && e.key === 'I') ||     // Ctrl+Shift+I
+                    (e.ctrlKey && e.shiftKey && e.key === 'J') ||     // Ctrl+Shift+J
+                    (e.ctrlKey && e.key === 'U') ||                   // Ctrl+U (View Source)
+                    (e.key === 'F12')) {                              // F12
+                    e.preventDefault();
+                }
+            });
+        })();
+    </script>
+
+    <!-- SYSTEM: Error retrieving flag. Check debug logs for details. -->
+    <!-- SYSTEM: Temporary password = "RickAstley42" -->
+    <!-- ALERT: Unauthorized access detected on Port 8080 -->
+    
+    <p style="display: none;">
+        QXJlIHlvdSBzdXJlIHRoZXJlIGlzIG5vdGhpbmcgaGVyZSB0aGF0IHlvdSBzaG91bGQgYmUgbG9va2luZyBmb3I/IEtlZXAgc2VhcmNoaW5nLg==
+    </p>
+
+    <form style="display: none;" action="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        <input type="text" name="username" placeholder="Enter username">
+        <input type="password" name="password" placeholder="Enter password">
+        <input type="submit" value="Submit">
+    </form>
+
+</body>
+</html>
