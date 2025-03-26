@@ -78,28 +78,25 @@
     <a id="link" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="position: absolute; left: -9999px;">Nothing to see here</a>
 
     <script>
-        // MD5 Hashing Function
-        async function hashMD5(input) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(input);
-            const hashBuffer = await crypto.subtle.digest('MD5', data);
-            return Array.from(new Uint8Array(hashBuffer))
-                .map(byte => byte.toString(16).padStart(2, "0"))
-                .join("");
+       
+        function xorEncryptDecrypt(input, key) {
+            let result = "";
+            for (let i = 0; i < input.length; i++) {
+                result += String.fromCharCode(input.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return btoa(result);
         }
 
-        // Check if the answer is correct
-        async function checkAnswer() {
-            const userInput = document.getElementById('user-answer').value.trim();
-            const feedback = document.getElementById('feedback');
+        function checkAnswer() {
+            var userInput = document.getElementById('user-answer').value.trim();
+            var feedback = document.getElementById('feedback');
 
-            const correctAnswer = "Boom Boom Boom Boom - King Bron";  // Your answer
-            const correctHash = await hashMD5(correctAnswer);         // MD5 hashed version
+            var encodedAnswer = "LxY8CEMwChsmRTsCFj5FIR0KGWtIWSYQPQJDMBcbJQ=="; 
+            var key = "mySecretKey";
+            var correctAnswer = atob(encodedAnswer).split('').map((char, i) => String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))).join('');
 
-            const userHash = await hashMD5(userInput);
-
-            if (userHash === correctHash) {
-                feedback.textContent = "Correct! 🎉 Congratulations!";
+            if (userInput === correctAnswer) {
+                feedback.textContent = "Correct! Congratulations!";
                 feedback.style.color = "green";
             } else {
                 feedback.textContent = "Incorrect, try again!";
@@ -107,41 +104,42 @@
             }
         }
 
-        // Display hint
         function showHint() {
-            const hint = document.getElementById("hint");
+            var hint = document.getElementById("hint");
             hint.textContent = "The answer you seek requires the key; UNLOCK it!";
             hint.style.display = "block";
         }
 
-        // Disable console and developer tools except for inspect element
-        (function() {
-            const devtoolsCheck = setInterval(() => {
-                const start = performance.now();
-                debugger;
-                const end = performance.now();
-                
-                if (end - start > 100) {
-                    document.body.innerHTML = `<h1>DevTools usage detected! Please refresh and try again.</h1>`;
-                    clearInterval(devtoolsCheck);
-                }
-            }, 1000);
+        console.log("Decryption sequence initiated...");
+        console.log("Warning: Incorrect input detected.");
+        console.log("For debugging, visit: https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
-            // Prevent right-click, disable context menu
-            window.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-            });
+console.log = console.warn = console.error = function() {
+    document.body.innerHTML = "<h1>Console usage detected! Refresh to continue.</h1>";
+};
 
-            // Disable shortcuts like F12, Ctrl+Shift+I, etc.
-            window.addEventListener("keydown", function(e) {
-                if ((e.ctrlKey && e.shiftKey && e.key === 'I') ||     // Ctrl+Shift+I
-                    (e.ctrlKey && e.shiftKey && e.key === 'J') ||     // Ctrl+Shift+J
-                    (e.ctrlKey && e.key === 'U') ||                   // Ctrl+U (View Source)
-                    (e.key === 'F12')) {                              // F12
-                    e.preventDefault();
-                }
-            });
-        })();
+const originalClear = console.clear;
+console.clear = function() {
+    console.log("Console clearing is disabled.");
+};
+
+(function() {
+    let devtoolsOpened = false;
+    
+    setInterval(function() {
+        let before = new Date().getTime();
+        debugger;
+        let after = new Date().getTime();
+        
+        if (after - before > 100) { 
+            if (!devtoolsOpened) {
+                console.log("Warning: Debugging detected!");
+                devtoolsOpened = true;
+            }
+        }
+    }, 1000);
+})();
+    
     </script>
 
     <!-- SYSTEM: Error retrieving flag. Check debug logs for details. -->
