@@ -91,8 +91,7 @@
             const userInput = document.getElementById('user-answer').value.trim();
             const feedback = document.getElementById('feedback');
 
-            const correctHash = "4c7695909c85623fff550b79376ff01e";  // MD5 hash of "Boom Boom Boom Boom - King Bron"
-            
+            const correctHash = "4c7695909c85623fff550b79376ff01e";  
             const userHash = await md5(userInput);
 
             if (userHash === correctHash) {
