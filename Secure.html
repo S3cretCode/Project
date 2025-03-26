@@ -93,7 +93,7 @@
             const feedback = document.getElementById('feedback');
 
             const correctHash = "4c7695909c85623fff550b79376ff01e";  
-            const userHash = await md5(userInput);
+            const userHash = md5(userInput);
 
             if (userHash === correctHash) {
                 feedback.textContent = "Correct! Congratulations!";
